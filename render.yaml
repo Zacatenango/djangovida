@@ -1,0 +1,22 @@
+databases:
+  - name: djangovida
+    plan: free
+    databaseName: djangovida
+    user: dsfargeg
+
+services:
+  - type: web
+    plan: free
+    name: jdangovida
+    runtime: python
+    buildCommand: './build.sh'
+    startCommand: 'python -m gunicorn djangovida.asgi:application -k uvicorn.workers.UvicornWorker'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: djangovida
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
